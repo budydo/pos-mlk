@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+/* Color scheme untuk POS MLK */
+@theme {
+    --color-soft-green: #eaf7ec;
+    --color-accent-green: #6dbf7a;
+    --color-muted: #547a5a;
+    --color-dark-gray: #0f1720;
+    --color-text-primary: #1b1b18;
+}
+
+/* Global base styles */
+@layer base {
+    html,
+    body {
+        @apply font-sans text-text-primary bg-soft-green;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-bold text-dark-gray;
+    }
+
+    h1 {
+        @apply text-3xl;
+    }
+
+    h2 {
+        @apply text-2xl;
+    }
+
+    h3 {
+        @apply text-xl;
+    }
+
+    a {
+        @apply text-emerald-700 underline hover:text-emerald-800 transition-colors;
+    }
+}
+
+/* Component utilities */
+@layer components {
+    /* Card components */
+    .card {
+        @apply bg-white rounded-lg shadow-md p-6;
+    }
+
+    .card-elevated {
+        @apply bg-white rounded-xl shadow-lg p-6;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        @apply bg-white h-screen overflow-y-auto;
+    }
+
+    .sidebar-header {
+        @apply p-6 border-b border-gray-200;
+    }
+
+    .sidebar-nav {
+        @apply p-4 space-y-2;
+    }
+
+    .sidebar-link {
+        @apply block px-3 py-2 text-dark-gray rounded-lg transition-colors;
+    }
+
+    .sidebar-link:hover {
+        @apply bg-emerald-50;
+    }
+
+    .sidebar-link.active {
+        @apply bg-accent-green text-white;
+    }
+
+    /* Buttons */
+    .btn {
+        @apply px-4 py-2 rounded-lg transition-colors font-medium;
+    }
+
+    .btn-primary {
+        @apply bg-accent-green text-white hover:bg-emerald-700;
+    }
+
+    .btn-secondary {
+        @apply bg-gray-200 text-dark-gray hover:bg-gray-300;
+    }
+
+    .btn-outline {
+        @apply border-2 border-accent-green text-accent-green hover:bg-soft-green;
+    }
+
+    /* Table */
+    .table-responsive {
+        @apply overflow-x-auto;
+    }
+
+    .table-striped tbody tr:nth-child(odd) {
+        @apply bg-soft-green;
+    }
+
+    /* Badge */
+    .badge {
+        @apply inline-block px-3 py-1 rounded-full text-sm font-medium;
+    }
+
+    .badge-success {
+        @apply bg-emerald-100 text-emerald-800;
+    }
+
+    .badge-warning {
+        @apply bg-yellow-100 text-yellow-800;
+    }
+
+    .badge-danger {
+        @apply bg-red-100 text-red-800;
+    }
+}
