@@ -6,9 +6,31 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $products = \App\Models\Product::all();
+        $q = $request->input('q');
+        $code = $request->input('code');
+        $name = $request->input('name');
+
+        $query = \App\Models\Product::query();
+
+        if ($q) {
+            $query->where(function($sub) use ($q) {
+                $sub->where('code', 'like', "%{$q}%")
+                    ->orWhere('name', 'like', "%{$q}%");
+            });
+        }
+
+        if ($code) {
+            $query->where('code', 'like', "%{$code}%");
+        }
+
+        if ($name) {
+            $query->where('name', 'like', "%{$name}%");
+        }
+
+        $products = $query->orderBy('name')->paginate(10)->withQueryString();
+
         return view('products.index', compact('products'));
     }
 

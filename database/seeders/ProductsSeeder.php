@@ -13,25 +13,37 @@ class ProductsSeeder extends Seeder
 
     public function run(): void
     {
-        Product::factory()->count(10)->create()->each(function ($product) {
-            // Create a few stock entries for history and update product stock
-            $entries = rand(1, 3);
+        // Create 20 products
+        Product::factory()->count(20)->create()->each(function ($product) {
             $total = 0;
+            $lastPrice = $product->cost_price;
 
-            for ($i = 0; $i < $entries; $i++) {
-                $qty = rand(5, 50);
-                $price = rand(500, 5000) / 100; // example
+            // Create 100 stock entries per product
+            for ($i = 0; $i < 100; $i++) {
+                $qty = rand(1, 20);
+                $price = rand(100, 5000) / 10; // example prices
 
-                StockEntry::create([
+                $entry = StockEntry::create([
                     'product_id' => $product->id,
                     'quantity' => $qty,
                     'purchase_price' => $price,
                 ]);
 
                 $total += $qty;
+                $lastPrice = $price;
             }
 
-            $product->update(['stock' => $total]);
+            // Update product stock and cost_price to last purchase price
+            $product->update(['stock' => $total, 'cost_price' => $lastPrice]);
+
+            // Make sure sell_price remains greater than cost_price
+            $product->refresh();
+            if ($product->sell_price <= $product->cost_price) {
+                // set a margin of 10% or at least 1 unit
+                $margin = max(1, round($product->cost_price * 0.1, 2));
+                $product->sell_price = round($product->cost_price + $margin, 2);
+                $product->save();
+            }
         });
     }
 }

@@ -10,6 +10,15 @@
             <h2 class="text-2xl font-bold mb-1">📝 Daftar Transaksi</h2>
             <p class="text-gray-600 text-sm">Lihat riwayat semua transaksi penjualan</p>
         </div>
+        <div>
+            <form method="GET" action="{{ route('transactions.index') }}" class="flex gap-2 items-center">
+                <input type="text" name="product_code" value="{{ request('product_code') }}" placeholder="Kode produk" class="input input-sm">
+                <input type="text" name="product_name" value="{{ request('product_name') }}" placeholder="Nama produk" class="input input-sm">
+                <input type="date" name="date_from" value="{{ request('date_from') }}" class="input input-sm">
+                <input type="date" name="date_to" value="{{ request('date_to') }}" class="input input-sm">
+                <button type="submit" class="btn btn-outline btn-sm">Filter</button>
+            </form>
+        </div>
     </div>
 
     @if(isset($transactions) && $transactions->count() > 0)
@@ -42,6 +51,9 @@
                 @endforeach
             </tbody>
         </table>
+        @if($transactions->hasPages())
+            <div class="mt-4">{{ $transactions->links() }}</div>
+        @endif
     </div>
     @else
     <div class="text-center py-12">

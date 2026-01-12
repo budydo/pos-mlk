@@ -11,6 +11,15 @@
             <p class="text-gray-600 text-sm">Kelola riwayat penambahan stok produk</p>
         </div>
         <div>
+            <form method="GET" action="{{ route('stock-entries.index') }}" class="flex gap-2 items-center mb-3">
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari produk / catatan" class="input input-sm">
+                <input type="text" name="product_code" value="{{ request('product_code') }}" placeholder="Kode produk" class="input input-sm">
+                <input type="text" name="product_name" value="{{ request('product_name') }}" placeholder="Nama produk" class="input input-sm">
+                <input type="date" name="date_from" value="{{ request('date_from') }}" class="input input-sm">
+                <input type="date" name="date_to" value="{{ request('date_to') }}" class="input input-sm">
+                <button type="submit" class="btn btn-outline btn-sm">Filter</button>
+            </form>
+
             @if(auth()->user()?->role === 'pemilik')
                 <a href="{{ route('stock-entries.create') }}" class="btn btn-primary no-underline">📥 Tambah Entri Stok</a>
             @endif
@@ -54,6 +63,9 @@
                 @endforeach
             </tbody>
         </table>
+        @if($entries->hasPages())
+            <div class="mt-4">{{ $entries->links() }}</div>
+        @endif
     </div>
     @else
     <div class="text-center py-12">
