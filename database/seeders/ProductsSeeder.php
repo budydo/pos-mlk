@@ -13,37 +13,122 @@ class ProductsSeeder extends Seeder
 
     public function run(): void
     {
-        // Create 20 products
-        Product::factory()->count(20)->create()->each(function ($product) {
-            $total = 0;
-            $lastPrice = $product->cost_price;
+        // Data produk Indonesia dengan harga realistis
+        $products = [
+            [
+                'code' => 'SKU001',
+                'barcode' => '8991234000001',
+                'name' => 'Indomie Mie Goreng',
+                'category' => 'Makanan',
+                'cost_price' => 1200,
+                'sell_price' => 1500,
+                'stock_qty' => 150,
+            ],
+            [
+                'code' => 'SKU002',
+                'barcode' => '8991234000002',
+                'name' => 'Teh Botol Sosro',
+                'category' => 'Minuman',
+                'cost_price' => 4000,
+                'sell_price' => 5500,
+                'stock_qty' => 120,
+            ],
+            [
+                'code' => 'SKU003',
+                'barcode' => '8991234000003',
+                'name' => 'Coca Cola 330ml',
+                'category' => 'Minuman',
+                'cost_price' => 5000,
+                'sell_price' => 6500,
+                'stock_qty' => 100,
+            ],
+            [
+                'code' => 'SKU004',
+                'barcode' => '8991234000004',
+                'name' => 'Beras Pera 5kg',
+                'category' => 'Bumbu & Bahan',
+                'cost_price' => 45000,
+                'sell_price' => 52000,
+                'stock_qty' => 30,
+            ],
+            [
+                'code' => 'SKU005',
+                'barcode' => '8991234000005',
+                'name' => 'Minyak Goreng Bimoli 1L',
+                'category' => 'Bumbu & Bahan',
+                'cost_price' => 12000,
+                'sell_price' => 14500,
+                'stock_qty' => 80,
+            ],
+            [
+                'code' => 'SKU006',
+                'barcode' => '8991234000006',
+                'name' => 'Gula Pasir 1kg',
+                'category' => 'Bumbu & Bahan',
+                'cost_price' => 9500,
+                'sell_price' => 11500,
+                'stock_qty' => 60,
+            ],
+            [
+                'code' => 'SKU007',
+                'barcode' => '8991234000007',
+                'name' => 'Roti Tawar Gardenia',
+                'category' => 'Makanan',
+                'cost_price' => 8000,
+                'sell_price' => 10000,
+                'stock_qty' => 45,
+            ],
+            [
+                'code' => 'SKU008',
+                'barcode' => '8991234000008',
+                'name' => 'Susu Ultra Milk 1L',
+                'category' => 'Minuman',
+                'cost_price' => 9500,
+                'sell_price' => 11500,
+                'stock_qty' => 70,
+            ],
+            [
+                'code' => 'SKU009',
+                'barcode' => '8991234000009',
+                'name' => 'Telur Ayam 1 Lusin',
+                'category' => 'Makanan',
+                'cost_price' => 18000,
+                'sell_price' => 21000,
+                'stock_qty' => 40,
+            ],
+            [
+                'code' => 'SKU010',
+                'barcode' => '8991234000010',
+                'name' => 'Kopi Nescafé 200g',
+                'category' => 'Minuman',
+                'cost_price' => 22000,
+                'sell_price' => 26500,
+                'stock_qty' => 55,
+            ],
+        ];
 
-            // Create 100 stock entries per product
-            for ($i = 0; $i < 100; $i++) {
-                $qty = rand(1, 20);
-                $price = rand(100, 5000) / 10; // example prices
+        // Create products dengan stock entries
+        foreach ($products as $data) {
+            $costPrice = $data['cost_price'];
+            $sellPrice = $data['sell_price'];
+            $stockQty = $data['stock_qty'];
 
-                $entry = StockEntry::create([
-                    'product_id' => $product->id,
-                    'quantity' => $qty,
-                    'purchase_price' => $price,
-                ]);
+            // Create product
+            $product = Product::create([
+                'code' => $data['code'],
+                'barcode' => $data['barcode'],
+                'name' => $data['name'],
+                'cost_price' => $costPrice,
+                'sell_price' => $sellPrice,
+                'stock' => $stockQty,
+            ]);
 
-                $total += $qty;
-                $lastPrice = $price;
-            }
-
-            // Update product stock and cost_price to last purchase price
-            $product->update(['stock' => $total, 'cost_price' => $lastPrice]);
-
-            // Make sure sell_price remains greater than cost_price
-            $product->refresh();
-            if ($product->sell_price <= $product->cost_price) {
-                // set a margin of 10% or at least 1 unit
-                $margin = max(1, round($product->cost_price * 0.1, 2));
-                $product->sell_price = round($product->cost_price + $margin, 2);
-                $product->save();
-            }
-        });
+            // Create stock entry untuk setiap produk
+            StockEntry::create([
+                'product_id' => $product->id,
+                'quantity' => $stockQty,
+                'purchase_price' => $costPrice,
+            ]);
+        }
     }
 }

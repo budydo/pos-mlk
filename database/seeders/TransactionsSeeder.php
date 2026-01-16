@@ -23,13 +23,14 @@ class TransactionsSeeder extends Seeder
             return;
         }
 
-        // Create 10 transactions in the last 10 days (1 per day)
+        // Create 10 transactions
         for ($i = 0; $i < 10; $i++) {
             DB::transaction(function () use ($cashiers, $products, $i) {
                 $date = now()->subDays($i)->subMinutes(rand(0, 1440));
                 $user = $cashiers->random();
 
-                $items = $products->random(rand(1, 4));
+                // Ambil 2-4 produk acak untuk setiap transaksi
+                $items = $products->random(rand(2, 4));
 
                 $total = 0;
                 $totalCost = 0;
@@ -47,9 +48,8 @@ class TransactionsSeeder extends Seeder
                 ]);
 
                 foreach ($items as $product) {
-                    $available = max(0, $product->stock);
-                    $qty = $available > 0 ? rand(1, min(5, $available)) : 0;
-                    if ($qty <= 0) continue;
+                    // Jangan kurangi stok untuk demo, tapi masukkan quantity yang realistis
+                    $qty = rand(1, 5);
 
                     $sell = $product->sell_price;
                     $cost = $product->cost_price;
@@ -68,9 +68,6 @@ class TransactionsSeeder extends Seeder
                         'updated_at' => $date,
                     ]);
 
-                    // Update product stock
-                    $product->decrement('stock', $qty);
-
                     $total += $itemTotal;
                     $totalCost += $qty * $cost;
                 }
@@ -80,7 +77,8 @@ class TransactionsSeeder extends Seeder
                     return;
                 }
 
-                $paid = $total + rand(0, 100);
+                // Bayar dengan jumlah yang pas atau lebih
+                $paid = $total + rand(0, 50000);
 
                 $tx->update([
                     'total' => $total,
@@ -93,3 +91,4 @@ class TransactionsSeeder extends Seeder
         }
     }
 }
+
